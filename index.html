@@ -140,7 +140,7 @@
                     <!-- The Video Element -->
                     <video id="video" src=""
                         class="hidden w-full h-full object-cover rounded-[24px] shadow-2xl relative z-10"
-                        controls playsinline></video>
+                        controls></video>
                 </div>
             </div>
         </div>
@@ -210,13 +210,13 @@
                 const geminiEndpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
 
                 const prompt = `
-Role: You are a professional video editor specializing in viral content.
-Task: Analyze the transcription below and identify the most engaging, funny, or surprising segment.
-Constraints:
-1. Duration: Maximum 60 seconds. (If video is shorter than 30s, identify a meaningful segment or the whole video if it's already short).
-2. Format: Return ONLY the start and duration string for Cloudinary. Format: so_<start_seconds>,du_<duration_seconds>
-3. Examples: "so_10,du_10" or "so_12.5,du_32.7"
-4. CRITICAL: Do not use markdown, do not use quotes, do not explain. Return ONLY the raw string.
+                Role: You are a professional video editor specializing in viral content.
+                Task: Analyze the transcription below and identify the most engaging, funny, or surprising segment.
+                Constraints:
+                1. Duration: Minimum 30 seconds, Maximum 60 seconds.
+                2. Format: Return ONLY the start and end string for Cloudinary. Format: so_<start_seconds>,eo_<end_seconds>
+                3. Examples: "so_10,eo_20" or "so_12.5,eo_45.2"
+                4. CRITICAL: Do not use markdown, do not use quotes, do not explain. Return ONLY the raw string.
 
 Transcription:
 ${transcription}
@@ -284,26 +284,14 @@ ${transcription}
                         const isReady = await app.waitForTranscription();
                         if (!isReady) throw new Error("A transcrição demorou demais.");
 
-                        el.loadingText.innerText = "Gerando recorte viral com IA...";
+                        el.loadingText.innerText = "Gerando momento viral com IA...";
 
-                        // O viralMoment deve vir no formato "so_0,eo_10"
-                        let viralMoment = await app.getViralMoment();
-                        
-                        // Limpeza extra para garantir que não venha lixo da IA
-                        // Remove espaços, aspas e outros caracteres que podem quebrar a URL
-                        viralMoment = viralMoment.replace(/[*"'`]/g, '').replace(/\s+/g, '').trim();
+                        const viralMoment = await app.getViralMoment();
+                        const viralMomentURL = `https://res.cloudinary.com/${app.cloudName}/video/upload/${viralMoment}/${app.public_id}.mp4`;
 
-                        // URL com a transformação de RECORTE + Otimização
-                        // so_X,du_Y + fl_clipping garante que o recorte seja 'físico' nos metadados
-                        // f_mp4 garante compatibilidade total com o player nativo do navegador
-                        const viralURL = `https://res.cloudinary.com/${app.cloudName}/video/upload/${viralMoment},fl_clipping,f_mp4,q_auto/${app.public_id}.mp4?v=${Date.now()}`;
-
-                        el.loadingText.innerHTML = `Clip Viral Gerado! ✨`;
-                        
-                        // Exibe apenas o vídeo CORTADO
+                        // Display Video with Animation
+                        el.video.setAttribute("src", viralMomentURL);
                         el.video.classList.remove("hidden");
-                        el.video.src = viralURL;
-                        el.video.load(); // Força o recarregamento dos metadados (duração)
                         el.placeholder.classList.add("opacity-0");
 
                         gsap.from(el.video, {
