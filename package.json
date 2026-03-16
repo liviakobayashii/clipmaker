@@ -1,0 +1,26 @@
+{
+  "name": "nlw-22",
+  "version": "1.0.0",
+  "description": "Projeto desenvolvido durante o evento **NLW** da plataforma **Rocketseat**, com o objetivo de criar uma ferramenta que utiliza Inteligência Artificial para identificar e extrair os momentos mais virais de vídeos longos.   O sistema permite o upload de vídeos, gera a transcrição automaticamente e utiliza o modelo Gemini da Google para selecionar o melhor segmento para redes sociais.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/liviakobayashii/nlw-operator.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/liviakobayashii/nlw-operator/issues"
+  },
+  "homepage": "https://github.com/liviakobayashii/nlw-operator#readme",
+  "devDependencies": {
+    "vite": "^8.0.0"
+  }
+}
